@@ -1,0 +1,36 @@
+-Je fais le projet entièrement en ligne de commande pour l'instant, je mettrai
+les graphismes plus tard avec PyGames
+
+-Je place le personnage sur la cellule d'entrée
+
+-Je place les 3 objets aléatoirement en m'assurant qu'ils sont sur une case disponible
+
+-Code assez illisible car je manipule des listes dans une liste
+
+-J'utilise des tuples pour les coordonnées
+
+-J'ai une jolie compréhension de liste qui me récupère la position du personnage
+à chaque déplacement et me la renvoie dans un tuple a l'intérieur d'une liste,
+donc j'ai une petite instruction juste pour la déballer :)
+
+-Pour le déplacement c'est juste une incrémentation dans le tuple de la valeur dont
+j'ai besoin pour bouger dans le sens voulu
+
+-Je n'arrive pas a faire déplacer le personnage en utilisant les flèches du clavier,
+donc je laisse la fonction comme ça pour l'instant, l'utilisation des flèches
+directionnelles ont l'air plus simples avec PyGames qu'avec des manips sur l'os
+
+-A chaque déplacement je teste si il y a un mur ou pas, si c'est bon, je regarde si
+il y a un objet, si oui je l'ajoute à ma liste 'picked' et je continue
+
+-En arrivant sur la cellule de sortie, je regarde les objets dans la liste 'picked'
+pour savoir si je perd ou si je gagne (dans l'énoncé le gardien est aussi la sortie)
+
+-Je suis pas fan du "if 'OBJ1' and 'OBJ2' and 'OBJ3' in picked:" mais la virgule et
+l'espace ne fonctionnent pas, donc pas le choix pour le moment
+
+-La PEP 8 m'oblige a nommer mes variables EN MAJUSCULE et je trouve ça pas terrible,
+tant pis
+
+-Je fais des print un peu partout pour m'assurer que tout fonctionne bien étape
+par étape
