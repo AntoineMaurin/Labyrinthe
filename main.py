@@ -1,8 +1,14 @@
 import random
 import keyboard
 import time
+import pygame
 
 from labyrinthe import here_is_the_maze, display_maze
+
+# pygame.init()
+# screen = pygame.display.set_mode((640, 480))
+#
+# print(pygame.get_sdl_version())
 
 """Préparation du labyrinthe et affichage"""
 THE_MAZE = here_is_the_maze()
@@ -42,8 +48,8 @@ def move(direction):
     elif direction == 'down' :
         next_pos = (current_pos[0] + 1), current_pos[1]
 
-    """Check si y'a un mur ou pas, si y'en a pas, on regarde si y'aurait pas un
-     objet a tout hasard.. Si on a un objet on l'ajoute dans la liste..
+    """Check si y'a un mur ou pas, si y'en a pas, on regarde s'il y a un
+     objet. Si on a un objet on l'ajoute dans la liste.
      Puis quand il se déplace sur la case de sortie on regarde si il a bien tous
      les objets"""
     if THE_MAZE[next_pos[0]][next_pos[1]] == 'X':
