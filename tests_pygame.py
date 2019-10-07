@@ -37,14 +37,13 @@ def move_with(pressed_key):
     elif pressed_key == 'ARROW DOWN':
         pygame.draw.rect(window, grey, pygame.Rect(100, 200, 40, 40), 2)
 
-
 running = True
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.KEYDOWN :
-            pressed_key = check_key()
+            pressed_key = check_key(event)
             move_with(pressed_key)
 
 
