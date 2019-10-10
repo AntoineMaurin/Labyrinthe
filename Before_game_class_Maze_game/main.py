@@ -1,18 +1,14 @@
 import pygame
 
-from game import Game
 from maze import Maze
 
 my_maze = Maze()
 
-my_game = Game()
+my_maze.add_objects()
+my_maze.maze_list = my_maze.get_maze()
+my_maze.generate_maze()
 
-my_game.maze.display_maze(my_maze)
-
-my_game.generate_maze()
-
-my_game.maze.display_maze(my_maze)
-
+my_maze.display_maze()
 
 running = True
 
@@ -22,7 +18,7 @@ while running != False:
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.KEYDOWN:
-            next_pos = my_game.set_position(event)
-            running = my_game.move(next_pos)
+            next_pos = my_maze.set_position(event)
+            running = my_maze.move(next_pos)
 
     pygame.display.flip()
