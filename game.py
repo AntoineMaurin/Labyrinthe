@@ -7,7 +7,6 @@ class Game:
 
     def __init__(self):
 
-        self.maze = Maze
         self.mazelist = Maze.get_maze(Maze)
 
         pygame.init()
@@ -25,7 +24,6 @@ class Game:
 
         position = [(index, self.mazelist[index].index('M')) for index in range(len(self.mazelist)) if 'M' in self.mazelist[index]]
         self.current_pos = position[0][0], position[0][1]
-
 
     def generate_maze(self):
         x, y = 0, 0
@@ -69,13 +67,11 @@ class Game:
             if self.picked == 3:
                 print("picked : ", self.picked)
                 print("You win, well played")
-                running = False
-                return running
             else:
                 print("You lose")
                 print("picked : ", self.picked)
-                running = False
-                return running
+            running = False
+            return running
         else:
             x, y = 0, 0
             width = 40
@@ -89,3 +85,17 @@ class Game:
             self.mazelist[self.current_pos[0]][self.current_pos[1]] = '#'
             self.current_pos = next_pos
             self.mazelist[next_pos[0]][next_pos[1]] = 'M'
+
+    def play(self):
+        running = True
+
+        """Sometimes move function returns None, and gets out of the while running loop"""
+        while running != False:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                elif event.type == pygame.KEYDOWN:
+                    next_pos = self.set_position(event)
+                    running = self.move(next_pos)
+
+            pygame.display.flip()

@@ -19,8 +19,9 @@ class Maze:
     def add_objects(self, list):
         i = 0
         while i < 3 :
-            OBJ = random.randint(1, 13), random.randint(1, 13)
-            if (list[OBJ[0]][OBJ[1]] != 'X'):
+            OBJ = random.randint(0, 14), random.randint(0, 14)
+            if (list[OBJ[0]][OBJ[1]] != 'X') and (list[OBJ[0]][OBJ[1]] != 'M') and (list[OBJ[0]][OBJ[1]] != 'O'):
                 list[OBJ[0]][OBJ[1]] = 'OBJ'
                 i += 1
         return list
+        print('OBJ : ', OBJ)

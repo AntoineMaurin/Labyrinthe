@@ -1,5 +1,3 @@
-- Faire une class Game
-
 - Renommer plus clairement les fonctions
 
 - Remplacer les carrés de couleur par les bonnes images
