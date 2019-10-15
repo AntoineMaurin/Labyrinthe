@@ -10,7 +10,8 @@ class Game:
 
         """Here we are getting the mazelist from the get_maze() method of the
         Maze class."""
-        self.mazelist = Maze.get_maze(Maze)
+        self.maze = Maze()
+        self.width = 45
 
         pygame.init()
         pygame.display.set_caption("Maze - Project 3")
@@ -22,25 +23,8 @@ class Game:
         # blue = (0, 128, 255)
         # white = (240, 240, 240)
 
-        """Variable used to count the picked up objects"""
-        self.picked = 0
-
-        """This list comprehension returns the coordinates of the 'M' element
-        in self.mazelist inside a tuple as the first element of a list.
-        Then, our self.current_pos takes the coordinates as a simple tuple
-        to allow an easier use of these coordinates."""
-        position = [(index, self.mazelist[index].index('M')) for index in range(len(self.mazelist)) if 'M' in self.mazelist[index]]
-        self.current_pos = position[0][0], position[0][1]
-
-        guard_pos = [(index, self.mazelist[index].index('O')) for index in range(len(self.mazelist)) if 'O' in self.mazelist[index]]
-        self.guard_pos = guard_pos[0][0], guard_pos[0][1]
-
-    def generate_maze(self):
-        x, y = 0, 0
-        width = 45
-
-        guardian = pygame.image.load("img/Gardien.png").convert()
         self.mc_gyv = pygame.image.load("img/MacGyver.png").convert()
+        self.guardian = pygame.image.load("img/Gardien.png").convert()
 
         aiguille = pygame.image.load("img/aiguille.png").convert()
         ether = pygame.image.load("img/ether.png").convert()
@@ -48,84 +32,122 @@ class Game:
 
         self.obj_list = [aiguille, ether, seringue]
 
-        """Creation of the graphic maze with Rect objects from the mazelist."""
-        for row in self.mazelist:
+    def draw_empty_maze(self):
+        x, y = 0, 0
+
+        for row in self.maze.mazelist:
             for cell in row:
                 if cell == 'X':
-                    pygame.draw.rect(
-                        self.window,
-                        (35, 35, 35),
-                        pygame.Rect(x, y, width, width)
-                        )
-                elif cell == 'M':
-                    rect = self.mc_gyv.get_rect()
-                    rect.topleft = (x + 7, y)
-                    self.window.blit(self.mc_gyv, rect)
-                elif cell == 'OBJ':
-                    pygame.draw.rect(
-                        self.window,
-                        (0, 153, 76),
-                        pygame.Rect(x, y, width, width)
-                        )
-                elif cell == 'O':
-                    rect = guardian.get_rect()
-                    rect.topleft = (x + 8, y + 5)
-                    self.window.blit(guardian, rect)
+                    pygame.draw.rect(self.window, (35, 35, 35), pygame.Rect(x, y, self.width, self.width))
                 else:
-                    pygame.draw.rect(
-                        self.window,
-                        (35, 35, 35),
-                        pygame.Rect(x, y, width, width), 2
-                        )
-                x = x + width
+                    pygame.draw.rect(self.window, (35, 35, 35), pygame.Rect(x, y, self.width, self.width), 2)
+                x = x + self.width
             x = 0
-            y = y + width
+            y = y + self.width
+
+    def draw_character(self):
+        pos = self.maze.get_current_pos()
+        # pygame.draw.rect(self.window, (0, 128, 255), pygame.Rect(pos[0] * width, pos[1] * width, width, width))
+        rect = self.mc_gyv.get_rect()
+        rect.topleft = (pos[1] * self.width, pos[0] * self.width)
+        self.window.blit(self.mc_gyv, rect)
+
+    def draw_guardian(self):
+        pos = self.maze.get_guard_pos()
+        rect = self.guardian.get_rect()
+        rect.topleft = (pos[1] * self.width + 6, pos[0] * self.width + 6)
+        self.window.blit(self.guardian, rect)
+
+    def draw_objects(self):
+        i = 0
+        for pos in self.maze.get_objects_pos():
+            print('obj : ', pos)
+            rect = self.obj_list[i].get_rect()
+            rect.topleft = (pos[1] * self.width + 3, pos[0] * self.width + 3)
+            self.window.blit(self.obj_list[i], rect)
+            i += 1
+
+
+    # def generate_maze(self):
+    #     x, y = 0, 0
+    #     width = 45
+    #
+    # aiguille = pygame.image.load("img/aiguille.png").convert()
+    # ether = pygame.image.load("img/ether.png").convert()
+    # seringue = pygame.image.load("img/seringue.png").convert()
+    #
+    # self.obj_list = [aiguille, ether, seringue]
+    #
+    #     """Creation of the graphic maze with Rect objects from the mazelist."""
+    #     for row in self.mazelist:
+    #         for cell in row:
+    #             if cell == 'X':
+    #                 pygame.draw.rect(
+    #                     self.window,
+    #                     (35, 35, 35),
+    #                     pygame.Rect(x, y, width, width)
+    #                     )
+    #             elif cell == 'M':
+    #                 rect = self.mc_gyv.get_rect()
+    #                 rect.topleft = (x + 7, y)
+    #                 self.window.blit(self.mc_gyv, rect)
+    #             elif cell == 'OBJ':
+    #                 pygame.draw.rect(
+    #                     self.window,
+    #                     (0, 153, 76),
+    #                     pygame.Rect(x, y, width, width)
+    #                     )
+    #             elif cell == 'O':
+    #                 rect = guardian.get_rect()
+    #                 rect.topleft = (x + 8, y + 5)
+    #                 self.window.blit(guardian, rect)
+    #             else:
+    #                 pygame.draw.rect(
+    #                     self.window,
+    #                     (35, 35, 35),
+    #                     pygame.Rect(x, y, width, width), 2
+    #                     )
+    #             x = x + width
+    #         x = 0
+    #         y = y + width
 
     def set_position(self, event):
+        current_pos = self.maze.get_current_pos()
         if event.key == pygame.K_LEFT:
-            next_pos = self.current_pos[0], (self.current_pos[1] - 1)
+            next_pos = current_pos[0], (current_pos[1] - 1)
         elif event.key == pygame.K_RIGHT:
-            next_pos = self.current_pos[0], (self.current_pos[1] + 1)
+            next_pos = current_pos[0], (current_pos[1] + 1)
         elif event.key == pygame.K_UP:
-            next_pos = (self.current_pos[0] - 1), self.current_pos[1]
+            next_pos = (current_pos[0] - 1), current_pos[1]
         elif event.key == pygame.K_DOWN:
-            next_pos = (self.current_pos[0] + 1), self.current_pos[1]
+            next_pos = (current_pos[0] + 1), current_pos[1]
         else:
-            next_pos = self.current_pos
+            next_pos = current_pos
             print("Please use keyboard arrows to move")
         return next_pos
 
     def move(self, next_pos):
-        if self.mazelist[next_pos[0]][next_pos[1]] == 'X':
+        current_pos = self.maze.get_current_pos()
+        if self.maze.is_wall(next_pos) == True:
             print("It's a wall")
             time.sleep(.1)
-        elif next_pos[0] > 14 or next_pos[1] > 14 or next_pos[0] < 0 or next_pos[1] < 0:
+        elif self.maze.is_too_far(next_pos) == True:
             print("Wrong way.")
-        elif self.mazelist[next_pos[0]][next_pos[1]] == 'O':
-            if self.picked == 3:
-                print("picked : ", self.picked)
-                print("You win, well played")
-            else:
-                print("You lose")
-                print("picked : ", self.picked)
+        elif self.maze.is_guardian(next_pos) == True:
             running = False
             return running
         else:
             x, y = 0, 0
             width = 45
-            if self.mazelist[next_pos[0]][next_pos[1]] == 'OBJ':
-                self.picked = self.picked + 1
-                print("You picked up an object \n", "picked : ", self.picked)
-            pygame.draw.rect(self.window, (240, 240, 240), pygame.Rect(self.current_pos[1] * width, self.current_pos[0] * width, width, width))
-            pygame.draw.rect(self.window, (35, 35, 35), pygame.Rect(self.current_pos[1] * width, self.current_pos[0] * width, width, width), 2)
+            if self.maze.is_object(next_pos):
+                print("You picked up an object")
+            pygame.draw.rect(self.window, (240, 240, 240), pygame.Rect(current_pos[1] * self.width, current_pos[0] * self.width, self.width, self.width))
+            pygame.draw.rect(self.window, (35, 35, 35), pygame.Rect(current_pos[1] * self.width, current_pos[0] * self.width, self.width, self.width), 2)
             rect = self.mc_gyv.get_rect()
             rect.topleft = (next_pos[1] * width + 8, next_pos[0] * width + 2)
             self.window.blit(self.mc_gyv, rect)
-            # pygame.draw.rect(self.window, (0, 128, 255), pygame.Rect(next_pos[1] * width, next_pos[0] * width, width, width))
             time.sleep(.1)
-            self.mazelist[self.current_pos[0]][self.current_pos[1]] = '#'
-            self.current_pos = next_pos
-            self.mazelist[next_pos[0]][next_pos[1]] = 'M'
+            self.maze.update_mazelist(next_pos)
 
     def play(self):
         running = True
@@ -140,7 +162,6 @@ class Game:
                     running = self.move(next_pos)
 
             pygame.display.flip()
-
 
 
 # rect = mc_gyv.get_rect()
