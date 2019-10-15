@@ -32,6 +32,9 @@ class Game:
 
         self.obj_list = [aiguille, ether, seringue]
 
+        self.current_pos = self.maze.get_current_pos()
+        self.next_pos = self.current_pos
+
     def draw_empty_maze(self):
         x, y = 0, 0
 
@@ -46,64 +49,66 @@ class Game:
             y = y + self.width
 
     def draw_character(self):
-        pos = self.maze.get_current_pos()
+        char_pos = self.maze.get_current_pos()
         # pygame.draw.rect(self.window, (0, 128, 255), pygame.Rect(pos[0] * width, pos[1] * width, width, width))
         rect = self.mc_gyv.get_rect()
-        rect.topleft = (pos[1] * self.width + 4, pos[0] * self.width + 3)
+        rect.topleft = (char_pos[1] * self.width + 4, char_pos[0] * self.width + 3)
         self.window.blit(self.mc_gyv, rect)
 
     def draw_guardian(self):
-        pos = self.maze.get_guard_pos()
+        guard_pos = self.maze.get_guard_pos()
         rect = self.guardian.get_rect()
-        rect.topleft = (pos[1] * self.width + 3, pos[0] * self.width + 3)
+        rect.topleft = (guard_pos[1] * self.width + 3, guard_pos[0] * self.width + 3)
         self.window.blit(self.guardian, rect)
 
     def draw_objects(self):
         i = 0
         for pos in self.maze.get_objects_pos():
             print('obj : ', pos)
+
             rect = self.obj_list[i].get_rect()
-            rect.topleft = (pos[1] * self.width + 3, pos[0] * self.width + 3)
+            rect.topleft = (pos[1] * self.width + 4, pos[0] * self.width + 3)
             self.window.blit(self.obj_list[i], rect)
             i += 1
 
     def set_position(self, event):
-        current_pos = self.maze.get_current_pos()
+        self.current_pos = self.maze.get_current_pos()
         if event.key == pygame.K_LEFT:
-            next_pos = current_pos[0], (current_pos[1] - 1)
+            self.next_pos = self.current_pos[0], (self.current_pos[1] - 1)
         elif event.key == pygame.K_RIGHT:
-            next_pos = current_pos[0], (current_pos[1] + 1)
+            self.next_pos = self.current_pos[0], (self.current_pos[1] + 1)
         elif event.key == pygame.K_UP:
-            next_pos = (current_pos[0] - 1), current_pos[1]
+            self.next_pos = (self.current_pos[0] - 1), self.current_pos[1]
         elif event.key == pygame.K_DOWN:
-            next_pos = (current_pos[0] + 1), current_pos[1]
+            self.next_pos = (self.current_pos[0] + 1), self.current_pos[1]
         else:
-            next_pos = current_pos
+            self.next_pos = self.current_pos
             print("Please use keyboard arrows to move")
-        return next_pos
 
-    def move(self, next_pos):
-        current_pos = self.maze.get_current_pos()
-        if self.maze.is_wall(next_pos):
+    def move(self):
+        if self.maze.is_wall(self.next_pos):
             print("It's a wall")
             time.sleep(.1)
-        elif self.maze.is_too_far(next_pos):
+        elif self.maze.is_too_far(self.next_pos):
             print("Wrong way.")
-        elif self.maze.is_guardian(next_pos):
+        elif self.maze.is_guardian(self.next_pos):
             running = False
             return running
         else:
-            x, y = 0, 0
-            width = 45
-            if self.maze.is_object(next_pos):
+            if self.maze.is_object(self.next_pos):
                 print("You picked up an object")
-            pygame.draw.rect(self.window, (240, 240, 240), pygame.Rect(current_pos[1] * self.width, current_pos[0] * self.width, self.width, self.width))
-            pygame.draw.rect(self.window, (35, 35, 35), pygame.Rect(current_pos[1] * self.width, current_pos[0] * self.width, self.width, self.width), 2)
-            rect = self.mc_gyv.get_rect()
-            rect.topleft = (next_pos[1] * width + 8, next_pos[0] * width + 2)
-            self.window.blit(self.mc_gyv, rect)
-            time.sleep(.1)
-            self.maze.update_mazelist(next_pos)
+            self.redraw()
+
+    def redraw(self):
+        pygame.draw.rect(self.window, (240, 240, 240), pygame.Rect(self.current_pos[1] * self.width, self.current_pos[0] * self.width, self.width, self.width))
+        pygame.draw.rect(self.window, (35, 35, 35), pygame.Rect(self.current_pos[1] * self.width, self.current_pos[0] * self.width, self.width, self.width), 2)
+
+        rect = self.mc_gyv.get_rect()
+        rect.topleft = (self.next_pos[1] * self.width + 4, self.next_pos[0] * self.width + 4)
+        self.window.blit(self.mc_gyv, rect)
+
+        time.sleep(.1)
+        self.maze.update_mazelist(self.next_pos)
 
     def play(self):
         running = True
@@ -114,7 +119,7 @@ class Game:
                 if event.type == pygame.QUIT:
                     running = False
                 elif event.type == pygame.KEYDOWN:
-                    next_pos = self.set_position(event)
-                    running = self.move(next_pos)
+                    self.set_position(event)
+                    running = self.move()
 
             pygame.display.flip()
