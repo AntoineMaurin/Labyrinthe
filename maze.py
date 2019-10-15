@@ -22,16 +22,23 @@ class Maze:
 
         self.picked = 0
 
-    def get_objects_pos(self):
+        self.obj_pos = []
+        self.set_objects()
+
+    def set_objects(self):
         i = 0
-        obj_pos = []
         while i < 3:
             obj = random.randint(0, 14), random.randint(0, 14)
-            if self.mazelist[obj[0]][obj[1]] is not 'X' and 'M' and 'O' and 'OBJ':
-                self.mazelist[obj[0]][obj[1]] = 'OBJ'
-                obj_pos.append(obj)
-                i += 1
-        return obj_pos
+            if self.mazelist[obj[0]][obj[1]] is not 'X':
+                if self.mazelist[obj[0]][obj[1]] is not 'OBJ':
+                    if obj != self.current_pos:
+                        if obj != self.guard_pos:
+                            self.mazelist[obj[0]][obj[1]] = 'OBJ'
+                            self.obj_pos.append(obj)
+                            i += 1
+
+    def get_objects_pos(self):
+        return self.obj_pos
 
     def get_current_pos(self):
         return self.current_pos
@@ -40,16 +47,10 @@ class Maze:
         return self.guard_pos
 
     def is_wall(self, next_pos):
-        if self.mazelist[next_pos[0]][next_pos[1]] == 'X':
-            return True
-        else:
-            return False
+        return self.mazelist[next_pos[0]][next_pos[1]] == 'X'
 
     def is_too_far(self, next_pos):
-        if next_pos[0] > 14 or next_pos[1] > 14 or next_pos[0] < 0 or next_pos[1] < 0:
-            return True
-        else:
-            return False
+        return next_pos[0] > 14 or next_pos[1] > 14 or next_pos[0] < 0 or next_pos[1] < 0
 
     def is_object(self, next_pos):
         if self.mazelist[next_pos[0]][next_pos[1]] == 'OBJ':
