@@ -23,8 +23,6 @@ class Maze:
 
         self.obj_pos = []
         self.set_objects()
-        for i in self.mazelist:
-            print(i)
 
     def set_objects(self):
         i = 0

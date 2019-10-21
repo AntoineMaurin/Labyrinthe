@@ -1,1 +1,5 @@
 env/
+standalone_tests/
+build/
+__pycache__/
+main.spec
