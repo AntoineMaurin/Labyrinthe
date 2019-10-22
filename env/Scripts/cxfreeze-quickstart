@@ -1,5 +1,0 @@
-#!e:\formation_python_openclassrooms\projet_3_labyrinthe\env\scripts\python.exe
-from cx_Freeze.setupwriter import main
-
-main()
-
