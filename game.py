@@ -43,9 +43,18 @@ class Game:
         for row in self.maze.mazelist:
             for cell in row:
                 if cell == 'X':
-                    pygame.draw.rect(self.window, (35, 35, 35), pygame.Rect(x, y, self.width, self.width))
+                    pygame.draw.rect(
+                                    self.window,
+                                    (35, 35, 35),
+                                    pygame.Rect(x, y, self.width, self.width)
+                                    )
                 else:
-                    pygame.draw.rect(self.window, (35, 35, 35), pygame.Rect(x, y, self.width, self.width), 2)
+                    pygame.draw.rect(
+                                    self.window,
+                                    (35, 35, 35),
+                                    pygame.Rect(x, y, self.width, self.width),
+                                    2
+                                    )
                 x = x + self.width
             x = 0
             y = y + self.width
@@ -71,7 +80,7 @@ class Game:
             self.window.blit(self.obj_list[i], rect)
             i += 1
 
-    def set_position(self, event):
+    def compute_next_pos(self, event):
         self.current_pos = self.maze.get_current_pos()
         if event.key == pygame.K_LEFT:
             self.next_pos = self.current_pos[0], (self.current_pos[1] - 1)
@@ -85,7 +94,7 @@ class Game:
             self.next_pos = self.current_pos
             print("Please use keyboard arrows to move")
 
-    def check_next_move(self):
+    def try_to_move(self):
         if self.maze.is_wall(self.next_pos):
             print("It's a wall")
         elif self.maze.is_too_far(self.next_pos):
@@ -121,7 +130,7 @@ class Game:
                 if event.type == pygame.QUIT:
                     running = False
                 elif event.type == pygame.KEYDOWN:
-                    self.set_position(event)
-                    running = self.check_next_move()
+                    self.compute_next_pos(event)
+                    running = self.try_to_move()
 
             pygame.display.flip()
