@@ -8,7 +8,7 @@ class Game:
     def __init__(self):
 
         self.maze = Maze()
-        self.width = 45
+        self.size = 45
 
         pygame.init()
         pygame.display.set_caption("Maze - Project 3")
@@ -46,29 +46,28 @@ class Game:
                     pygame.draw.rect(
                                     self.window,
                                     (35, 35, 35),
-                                    pygame.Rect(x, y, self.width, self.width)
+                                    pygame.Rect(x, y, self.size, self.size)
                                     )
                 else:
                     pygame.draw.rect(
                                     self.window,
                                     (35, 35, 35),
-                                    pygame.Rect(x, y, self.width, self.width),
-                                    2
+                                    pygame.Rect(x, y, self.size, self.size), 2
                                     )
-                x = x + self.width
+                x = x + self.size
             x = 0
-            y = y + self.width
+            y = y + self.size
 
     def draw_character(self):
-        char_pos = self.maze.get_current_pos()
+        pos = self.maze.get_current_pos()
         rect = self.mc_gyv.get_rect()
-        rect.topleft = (char_pos[1] * self.width + 4, char_pos[0] * self.width + 3)
+        rect.topleft = (pos[1] * self.size + 4, pos[0] * self.size + 3)
         self.window.blit(self.mc_gyv, rect)
 
     def draw_guardian(self):
-        guard_pos = self.maze.get_guard_pos()
+        pos = self.maze.get_guard_pos()
         rect = self.guardian.get_rect()
-        rect.topleft = (guard_pos[1] * self.width + 3, guard_pos[0] * self.width + 3)
+        rect.topleft = (pos[1] * self.size + 3, pos[0] * self.size + 3)
         self.window.blit(self.guardian, rect)
 
     def draw_objects(self):
@@ -76,7 +75,7 @@ class Game:
         for pos in self.maze.get_objects_pos():
 
             rect = self.obj_list[i].get_rect()
-            rect.topleft = (pos[1] * self.width + 4, pos[0] * self.width + 3)
+            rect.topleft = (pos[1] * self.size + 4, pos[0] * self.size + 3)
             self.window.blit(self.obj_list[i], rect)
             i += 1
 
@@ -110,17 +109,47 @@ class Game:
     def move(self):
         self.redraw()
         rect = self.mc_gyv.get_rect()
-        rect.topleft = (self.next_pos[1] * self.width + 4, self.next_pos[0] * self.width + 4)
+        rect.topleft = (
+                        self.next_pos[1] * self.size + 4,
+                        self.next_pos[0] * self.size + 4
+                        )
         self.window.blit(self.mc_gyv, rect)
 
         self.maze.update_mazelist(self.next_pos)
 
     def redraw(self):
-        pygame.draw.rect(self.window, (240, 240, 240), pygame.Rect(self.current_pos[1] * self.width, self.current_pos[0] * self.width, self.width, self.width))
-        pygame.draw.rect(self.window, (35, 35, 35), pygame.Rect(self.current_pos[1] * self.width, self.current_pos[0] * self.width, self.width, self.width), 2)
-
-        pygame.draw.rect(self.window, (240, 240, 240), pygame.Rect(self.next_pos[1] * self.width, self.next_pos[0] * self.width, self.width, self.width))
-        pygame.draw.rect(self.window, (35, 35, 35), pygame.Rect(self.next_pos[1] * self.width, self.next_pos[0] * self.width, self.width, self.width), 2)
+        pygame.draw.rect(
+                        self.window,
+                        (240, 240, 240),
+                        pygame.Rect(
+                                    self.current_pos[1] * self.size,
+                                    self.current_pos[0] * self.size,
+                                    self.size, self.size)
+                                    )
+        pygame.draw.rect(
+                        self.window,
+                        (35, 35, 35),
+                        pygame.Rect(
+                                    self.current_pos[1] * self.size,
+                                    self.current_pos[0] * self.size,
+                                    self.size, self.size), 2
+                                    )
+        pygame.draw.rect(
+                        self.window,
+                        (240, 240, 240),
+                        pygame.Rect(
+                                    self.next_pos[1] * self.size,
+                                    self.next_pos[0] * self.size,
+                                    self.size, self.size)
+                                    )
+        pygame.draw.rect(
+                        self.window,
+                        (35, 35, 35),
+                        pygame.Rect(
+                                    self.next_pos[1] * self.size,
+                                    self.next_pos[0] * self.size,
+                                    self.size, self.size), 2
+                                    )
 
     def play(self):
         running = True

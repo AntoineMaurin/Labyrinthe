@@ -5,19 +5,24 @@ class Maze:
 
     def __init__(self):
 
-        opened_file = open("Maze.txt", 'r')
-        self.mazelist = [list(line.strip()) for line in opened_file.readlines()]
-        opened_file.close()
+        maze_file = open("Maze.txt", 'r')
+        self.mazelist = [list(line.strip()) for line in maze_file.readlines()]
+        maze_file.close()
 
-        """This list comprehension returns a tuple of the coordinates inside
-         a list of the 'M' element in the mazelist, which is a list of lists.
-         Example : [(12,4)]"""
+        # position = [(index, self.mazelist[index].index('M')) for index in range(len(self.mazelist)) if 'M' in self.mazelist[index]]
+        for index in range(len(self.mazelist)):
+            if 'M' in self.mazelist[index]:
+                position = (index, self.mazelist[index].index('M'))
+        # self.current_pos = position[0][0], position[0][1]
+        self.current_pos = position
 
-        position = [(index, self.mazelist[index].index('M')) for index in range(len(self.mazelist)) if 'M' in self.mazelist[index]]
-        self.current_pos = position[0][0], position[0][1]
+        # guard_pos = [(index, self.mazelist[index].index('O')) for index in range(len(self.mazelist)) if 'O' in self.mazelist[index]]
+        for index in range(len(self.mazelist)):
+            if 'O' in self.mazelist[index]:
+                guard_pos = (index, self.mazelist[index].index('O'))
 
-        guard_pos = [(index, self.mazelist[index].index('O')) for index in range(len(self.mazelist)) if 'O' in self.mazelist[index]]
-        self.guard_pos = guard_pos[0][0], guard_pos[0][1]
+        # self.guard_pos = guard_pos[0][0], guard_pos[0][1]
+        self.guard_pos = guard_pos
 
         self.picked = 0
 
@@ -55,7 +60,12 @@ class Maze:
             return True
 
     def is_too_far(self, next_pos):
-        return next_pos[0] > 14 or next_pos[1] > 14 or next_pos[0] < 0 or next_pos[1] < 0
+        if next_pos[0] > 14 or next_pos[1] > 14:
+            return True
+        elif next_pos[0] < 0 or next_pos[1] < 0:
+            return True
+        else:
+            return False
 
     def is_object(self, next_pos):
         if self.mazelist[next_pos[0]][next_pos[1]] == 'OBJ':
