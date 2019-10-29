@@ -1,6 +1,6 @@
 certifi==2019.6.16
 cycler==0.10.0
-Django==1.11
+Django==1.11.23
 kiwisolver==1.0.1
 matplotlib==3.0.3
 numpy==1.16.3
