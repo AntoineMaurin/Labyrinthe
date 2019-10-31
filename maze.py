@@ -16,10 +16,9 @@ class Maze:
         self.mazelist = [list(line.strip()) for line in maze_file.readlines()]
         maze_file.close()
 
-        self.is_maze_usable()
-
         self.height = len(self.mazelist)
         self.width = len(self.mazelist[0])
+
 
         # position = [(index, self.mazelist[index].index('M')) for index in range(len(self.mazelist)) if 'M' in self.mazelist[index]]
         # self.current_pos = position[0][0], position[0][1]
@@ -38,12 +37,14 @@ class Maze:
     methods."""
     def is_maze_usable(self):
         if (self.check_maze_length()):
-            if (self.is_pure()):
-                if (self.is_once('M')):
-                    if (self.is_once('G')):
-                        return True
+            return True
+        if (self.is_pure()):
+            return True
+        if (self.is_once('M')):
+            return True
+        if (self.is_once('G')):
+            return True
         else:
-            print('Error in Maze.txt, can not use it to generate a maze.')
             return False
 
     """This function checks if all the lines in the maze are the same lenght.
@@ -109,24 +110,20 @@ class Maze:
     def get_guard_pos(self):
         return self.guard_pos
 
-    """This function checks if the next_pos given in parameter is a wall
-    or not."""
-    def is_wall(self, next_pos):
-        try:
-            return self.mazelist[next_pos[0]][next_pos[1]] == 'X'
-        except IndexError:
-            print('Wrong way')
-            return True
-
     """This function checks if the next_pos given in parameter is on the limits
     of the maze or not."""
     def is_too_far(self, next_pos):
-        if next_pos[0] > self.width or next_pos[1] > self.height:
+        if next_pos[0] > self.width - 1 or next_pos[1] > self.height - 1:
             return True
         elif next_pos[0] < 0 or next_pos[1] < 0:
             return True
         else:
             return False
+
+    """This function checks if the next_pos given in parameter is a wall
+    or not."""
+    def is_wall(self, next_pos):
+        return self.mazelist[next_pos[0]][next_pos[1]] == 'X'
 
     """This function checks if the next_pos given in parameter is the guardian
     positon or not."""

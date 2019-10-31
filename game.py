@@ -3,6 +3,8 @@ import pygame
 
 """This class manages the game in general, using the pygame library."""
 
+CELL_SIZE = 45
+
 
 class Game:
 
@@ -12,13 +14,12 @@ class Game:
     def __init__(self):
 
         self.maze = Maze()
-        self.size = 45
 
         pygame.init()
         pygame.display.set_caption("Maze - Project 3")
         self.window = pygame.display.set_mode((
-                                              self.maze.width * self.size,
-                                              self.maze.height * self.size
+                                              self.maze.width * CELL_SIZE,
+                                              self.maze.height * CELL_SIZE
                                               ))
         self.window.fill((240, 240, 240))
 
@@ -55,30 +56,30 @@ class Game:
                     pygame.draw.rect(
                                     self.window,
                                     (35, 35, 35),
-                                    pygame.Rect(x, y, self.size, self.size)
+                                    pygame.Rect(x, y, CELL_SIZE, CELL_SIZE)
                                     )
                 else:
                     pygame.draw.rect(
                                     self.window,
                                     (35, 35, 35),
-                                    pygame.Rect(x, y, self.size, self.size), 2
+                                    pygame.Rect(x, y, CELL_SIZE, CELL_SIZE), 2
                                     )
-                x = x + self.size
+                x = x + CELL_SIZE
             x = 0
-            y = y + self.size
+            y = y + CELL_SIZE
 
     """Draws the main character on the game window."""
     def draw_character(self):
         pos = self.maze.get_current_pos()
         rect = self.mc_gyv.get_rect()
-        rect.topleft = (pos[1] * self.size + 4, pos[0] * self.size + 3)
+        rect.topleft = (pos[1] * CELL_SIZE + 4, pos[0] * CELL_SIZE + 3)
         self.window.blit(self.mc_gyv, rect)
 
     """Draws the guardian which is also the exit of the maze."""
     def draw_guardian(self):
         pos = self.maze.get_guard_pos()
         rect = self.guardian.get_rect()
-        rect.topleft = (pos[1] * self.size + 3, pos[0] * self.size + 3)
+        rect.topleft = (pos[1] * CELL_SIZE + 3, pos[0] * CELL_SIZE + 3)
         self.window.blit(self.guardian, rect)
 
     """Draws the three objects at random positions on free spaces of the
@@ -88,7 +89,7 @@ class Game:
         for pos in self.maze.get_objects_pos():
 
             rect = self.obj_list[i].get_rect()
-            rect.topleft = (pos[1] * self.size + 4, pos[0] * self.size + 3)
+            rect.topleft = (pos[1] * CELL_SIZE + 4, pos[0] * CELL_SIZE + 3)
             self.window.blit(self.obj_list[i], rect)
             i += 1
 
@@ -112,11 +113,9 @@ class Game:
     """This function checks if we can move to the next position, if yes, it
     calls the move() function."""
     def try_to_move(self, running):
-        if self.maze.is_wall(self.next_pos):
-            print("It's a wall")
+        if self.maze.is_too_far(self.next_pos):
             return True
-        elif self.maze.is_too_far(self.next_pos):
-            print("Wrong way")
+        elif self.maze.is_wall(self.next_pos):
             return True
         elif self.maze.is_guardian(self.next_pos):
             return False
@@ -133,8 +132,8 @@ class Game:
         self.redraw()
         rect = self.mc_gyv.get_rect()
         rect.topleft = (
-                        self.next_pos[1] * self.size + 4,
-                        self.next_pos[0] * self.size + 4
+                        self.next_pos[1] * CELL_SIZE + 4,
+                        self.next_pos[0] * CELL_SIZE + 4
                         )
         self.window.blit(self.mc_gyv, rect)
 
@@ -148,33 +147,33 @@ class Game:
                         self.window,
                         (240, 240, 240),
                         pygame.Rect(
-                                    self.current_pos[1] * self.size,
-                                    self.current_pos[0] * self.size,
-                                    self.size, self.size)
+                                    self.current_pos[1] * CELL_SIZE,
+                                    self.current_pos[0] * CELL_SIZE,
+                                    CELL_SIZE, CELL_SIZE)
                                     )
         pygame.draw.rect(
                         self.window,
                         (35, 35, 35),
                         pygame.Rect(
-                                    self.current_pos[1] * self.size,
-                                    self.current_pos[0] * self.size,
-                                    self.size, self.size), 2
+                                    self.current_pos[1] * CELL_SIZE,
+                                    self.current_pos[0] * CELL_SIZE,
+                                    CELL_SIZE, CELL_SIZE), 2
                                     )
         pygame.draw.rect(
                         self.window,
                         (240, 240, 240),
                         pygame.Rect(
-                                    self.next_pos[1] * self.size,
-                                    self.next_pos[0] * self.size,
-                                    self.size, self.size)
+                                    self.next_pos[1] * CELL_SIZE,
+                                    self.next_pos[0] * CELL_SIZE,
+                                    CELL_SIZE, CELL_SIZE)
                                     )
         pygame.draw.rect(
                         self.window,
                         (35, 35, 35),
                         pygame.Rect(
-                                    self.next_pos[1] * self.size,
-                                    self.next_pos[0] * self.size,
-                                    self.size, self.size), 2
+                                    self.next_pos[1] * CELL_SIZE,
+                                    self.next_pos[0] * CELL_SIZE,
+                                    CELL_SIZE, CELL_SIZE), 2
                                     )
 
     """This function displays the game constantly after checking if the Maze.txt
