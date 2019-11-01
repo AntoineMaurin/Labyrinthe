@@ -19,6 +19,9 @@ class Maze:
         self.height = len(self.mazelist)
         self.width = len(self.mazelist[0])
 
+        print(self.height)
+        print(self.width)
+
         # position = [(index, self.mazelist[index].index('M')) for index in range(len(self.mazelist)) if 'M' in self.mazelist[index]]
         # self.current_pos = position[0][0], position[0][1]
 
@@ -110,9 +113,9 @@ class Maze:
     """This function checks if the next_pos given in parameter is on the limits
     of the maze or not."""
     def is_too_far(self, next_pos):
-        if next_pos[0] > self.width - 1 or next_pos[1] > self.height - 1:
+        if next_pos[0] > self.height - 1 or next_pos[0] < 0:
             return True
-        elif next_pos[0] < 0 or next_pos[1] < 0:
+        elif next_pos[1] > self.width - 1 or next_pos[1] < 0:
             return True
         else:
             return False
