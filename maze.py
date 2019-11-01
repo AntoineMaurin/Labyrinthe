@@ -19,7 +19,6 @@ class Maze:
         self.height = len(self.mazelist)
         self.width = len(self.mazelist[0])
 
-
         # position = [(index, self.mazelist[index].index('M')) for index in range(len(self.mazelist)) if 'M' in self.mazelist[index]]
         # self.current_pos = position[0][0], position[0][1]
 
@@ -36,37 +35,33 @@ class Maze:
     """This function returns True if the maze is usable, by calling four cheking
     methods."""
     def is_maze_usable(self):
-        if (self.check_maze_length()):
-            return True
-        if (self.is_pure()):
-            return True
-        if (self.is_once('M')):
-            return True
-        if (self.is_once('G')):
-            return True
-        else:
-            return False
+        for state in (self.check_maze_length(),
+                      self.is_pure(),
+                      self.is_once('M'),
+                      self.is_once('G')
+                      ):
+            if state is False:
+                return False
+        return True
 
     """This function checks if all the lines in the maze are the same lenght.
     It's a problem if they're not because the size of the window is calculated
     with the lenght of the first line, and I also want my maze to be a
     square."""
     def check_maze_length(self):
-        state = True
         for index, elt in enumerate(self.mazelist):
             if (len(elt)) != len(self.mazelist[index - 1]):
-                state = False
-        return state
+                return False
+        return True
 
     """This function checks if there is not other string in the maze than
     'M', 'G', '#', 'X' or 'OBJ'."""
     def is_pure(self):
-        state = True
         for row in self.mazelist:
             for cell in row:
                 if cell not in ('M', 'G', '#', 'X', 'OBJ'):
-                    state = False
-        return state
+                    return False
+        return True
 
     """This function checks if a certain letter in the maze is in it only
     once."""
@@ -89,7 +84,9 @@ class Maze:
     def set_objects(self):
         i = 0
         while i < 3:
-            obj = random.randint(0, 14), random.randint(0, 14)
+            obj = (random.randint(0, self.height - 1),
+                   random.randint(0, self.width - 1))
+
             if self.mazelist[obj[0]][obj[1]] != 'X':
                 if self.mazelist[obj[0]][obj[1]] != 'OBJ':
                     if obj != self.current_pos:
