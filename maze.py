@@ -19,16 +19,7 @@ class Maze:
         self.height = len(self.mazelist)
         self.width = len(self.mazelist[0])
 
-        print(self.height)
-        print(self.width)
-
-        # position = [(index, self.mazelist[index].index('M')) for index in range(len(self.mazelist)) if 'M' in self.mazelist[index]]
-        # self.current_pos = position[0][0], position[0][1]
-
         self.current_pos = self.where_is('M')
-
-        # guard_pos = [(index, self.mazelist[index].index('O')) for index in range(len(self.mazelist)) if 'O' in self.mazelist[index]]
-        # self.guard_pos = guard_pos[0][0], guard_pos[0][1]
         self.guard_pos = self.where_is('G')
 
         self.picked = 0
@@ -128,23 +119,13 @@ class Maze:
     """This function checks if the next_pos given in parameter is the guardian
     positon or not."""
     def is_guardian(self, next_pos):
-        if self.mazelist[next_pos[0]][next_pos[1]] == 'G':
-            if self.picked == 3:
-                print("picked : ", self.picked)
-                print("You win, well played")
-            else:
-                print("You lose")
-                print("picked : ", self.picked)
-            return True
-        else:
-            return False
+        return self.mazelist[next_pos[0]][next_pos[1]] == 'G'
 
     """This function checks if the next_pos given in parameter is an object
     positon or not."""
     def is_object(self, next_pos):
         if self.mazelist[next_pos[0]][next_pos[1]] == 'OBJ':
             self.picked += 1
-            print("picked : ", self.picked)
             return True
         else:
             return False

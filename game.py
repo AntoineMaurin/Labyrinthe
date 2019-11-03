@@ -1,3 +1,4 @@
+import time
 from maze import Maze
 import pygame
 
@@ -19,7 +20,7 @@ class Game:
         pygame.display.set_caption("Maze - Project 3")
         self.window = pygame.display.set_mode((
                                               self.maze.width * CELL_SIZE,
-                                              self.maze.height * CELL_SIZE
+                                              self.maze.height * CELL_SIZE + 30
                                               ))
         self.window.fill((240, 240, 240))
 
@@ -27,6 +28,8 @@ class Game:
         # green = (0, 153, 76)
         # blue = (0, 128, 255)
         # white = (240, 240, 240)
+
+        self.serif_font = pygame.font.SysFont("serif", 25)
 
         self.mc_gyv = pygame.image.load("img/MacGyver.png").convert()
         self.guardian = pygame.image.load("img/Gardien.png").convert_alpha()
@@ -44,6 +47,27 @@ class Game:
         self.draw_character()
         self.draw_guardian()
         self.draw_objects()
+
+        self.display_text(
+                          "Move with keyboard arrows to pick up all 3 objects",
+                          self.serif_font)
+
+    def display_text(self, message, font):
+        self.clean_text()
+        text = font.render(message, True, (35, 35, 35))
+
+        textpos = text.get_rect()
+        textpos.centerx = self.window.get_rect().centerx
+        textpos.y = (self.maze.height * CELL_SIZE)
+        self.window.blit(text, textpos)
+
+    def clean_text(self):
+        pygame.draw.rect(
+                        self.window,
+                        (240, 240, 240),
+                        pygame.Rect(0, self.maze.height * CELL_SIZE + 1,
+                                    self.maze.width * CELL_SIZE, 30)
+                                    )
 
     """Draws the maze from the mazelist attribute of the Maze class with only
     walls and free spaces."""
@@ -108,20 +132,32 @@ class Game:
             self.next_pos = (self.current_pos[0] + 1), self.current_pos[1]
         else:
             self.next_pos = self.current_pos
-            print("Please use keyboard arrows to move")
 
     """This function checks if we can move to the next position, if yes, it
     calls the move() function."""
-    def try_to_move(self, running):
+    def try_to_move(self, event):
         if self.maze.is_too_far(self.next_pos):
             return True
         elif self.maze.is_wall(self.next_pos):
             return True
         elif self.maze.is_guardian(self.next_pos):
-            return False
+            if self.maze.picked == 3:
+                self.display_text("Congratulations you win !", self.serif_font)
+                pygame.display.flip()
+                time.sleep(1)
+            else:
+                self.display_text("You lose..", self.serif_font)
+                pygame.display.flip()
+                time.sleep(1)
         else:
             if self.maze.is_object(self.next_pos):
-                print("You picked up an object")
+                self.display_text("You have {} object(s)".format(
+                                self.maze.picked),
+                                self.serif_font)
+                if self.maze.picked == 3:
+                    self.display_text(
+                                      "Go to the guardian now !",
+                                      self.serif_font)
             self.move()
             return True
 
@@ -135,6 +171,7 @@ class Game:
                         self.next_pos[1] * CELL_SIZE + 4,
                         self.next_pos[0] * CELL_SIZE + 4
                         )
+
         self.window.blit(self.mc_gyv, rect)
 
         self.maze.update_macgyver(self.next_pos)
@@ -188,8 +225,9 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
-                elif event.type == pygame.KEYDOWN:
+                if event.type == pygame.KEYDOWN:
                     self.compute_next_pos(event)
-                    running = self.try_to_move(running)
+                    running = self.try_to_move(event)
 
             pygame.display.flip()
+            pygame.event.pump()
